@@ -1,0 +1,108 @@
+#just in case 
+# mkdir /opt/mysql
+# cd /opt/mysql
+# wget http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz
+# tar xvzf mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz
+# rm mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz
+# mv mysql-5.6.23-linux-glibc2.5-x86_64 mysql-5.6 
+#Shut Down 
+# mysqladmin --defaults-file=/opt/mysql/master/master.cnf -uroot –p shutdown
+
+#Creating instance
+# mkdir /opt/mysql/master /opt/mysql/master/data /opt/mysql/master/tmp
+# cd /opt/mysql/master
+# nano master.cnf
+[client]
+port=3310
+socket=/opt/mysql/master/tmp/my-master.sock
+
+[mysql] 
+prompt=master>\\_
+
+[mysqld]
+server-id=10
+port=3310
+basedir=/usr
+datadir=/opt/mysql/master/data
+socket=/opt/mysql/master/tmp/my-master.sock
+log-bin=master-bin.log
+innodb_flush_log_at_trx_commit=1
+sync_binlog=1
+# chown mysql:mysql *
+# /usr/bin/mysql_install_db --defaults-file=/opt/mysql/master/master.cnf --user=mysql
+
+#Testing it 
+
+# /usr/bin/mysqld_safe --defaults-file=/opt/mysql/master/master.cnf &
+# mysql --defaults-file=/opt/mysql/master/master.cnf -uroot -p
+master> SHOW VARIABLES LIKE 'port';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| port          | 3310  |
++---------------+-------+
+
+#Slave 
+# mkdir /opt/mysql/slave /opt/mysql/slave/data /opt/mysql/slave/tmp
+# cd /opt/mysql/slave
+# nano slave.cnf
+[client]
+port=3311
+socket=/opt/mysql/slave/tmp/my-slave.sock
+
+[mysql] 
+prompt=slave>\\_
+
+[mysqld]
+server-id=11
+port=3311
+basedir=/usr
+datadir=/opt/mysql/slave/data
+socket=/opt/mysql/slave/tmp/my-slave.sock
+log-bin=slave-bin.log
+innodb_flush_log_at_trx_commit=1
+sync_binlog=1
+# chown mysql:mysql *
+# /usr/bin/mysql_install_db --defaults-file=/opt/mysql/slave/slave.cnf --user=mysql 
+
+#Testing it 
+
+# /usr/bin/mysqld_safe --defaults-file=/opt/mysql/slave/slave.cnf &
+# mysql --defaults-file=/opt/mysql/slave/slave.cnf -uroot -p
+slave> SHOW VARIABLES LIKE 'port';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| port          | 3311  |
++---------------+-------+
+
+#Create User 
+
+master> CREATE USER repl_user@127.0.0.1;
+master> GRANT REPLICATION SLAVE ON *.* TO repl_user@127.0.0.1 IDENTIFIED BY 'repl_user_password'; 
+
+#Status 
+master> SHOW MASTER STATUS \G
+*************************** 1. row ***************************
+             File: 
+         Position: 
+         
+
+#Slave Mirror 
+slave> CHANGE MASTER TO 
+    MASTER_HOST='', 
+    MASTER_PORT=, 
+    MASTER_USER='',
+    MASTER_PASSWORD='',
+    MASTER_LOG_FILE='',
+    MASTER_LOG_POS=;
+slave> START SLAVE;
+
+#Last test 
+
+master> CREATE DATABASE teste_repl;
+master> CREATE TABLE teste_repl.simples (id INT NOT NULL PRIMARY KEY);
+master> INSERT INTO teste_repl.simples VALUES (999),(1),(20),(5);
+
+slave> SELECT * FROM teste_repl.simples; 
+
