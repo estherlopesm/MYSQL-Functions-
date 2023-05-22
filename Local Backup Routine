@@ -1,10 +1,13 @@
 /backup# cd / 
 
-df - h (entrar locais disponíveis para backup)
 vim /etc/crontab => fazer a config nele (test)
+0 2 * * * root/opt/otrs/scripts/backup.pl -r 5 -d /backup -t dbonly
+
 /opt/otrs/scripts/backup.pl 
 root/opt/otrs/scripts/backup.pl -r 5 -d /backup 
 
 
-
-0 2 * * * root/opt/otrs/scripts/backup.pl -r 5 -d /backup 
+df - h (entrar locais disponíveis para backup)
+grep Database /opt/otrs/Kernel/Config.pm = > Senha
+mysql -u root -p (logar) 
+SELECT sum(round(((data_length + index_length) / 1024 / 1024 / 1024), 2)) as "Size in GB" FROM information_schema.TABLES WHERE table_schema = "otrs"; (tamanho do banco)
