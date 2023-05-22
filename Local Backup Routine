@@ -10,5 +10,5 @@ root/opt/otrs/scripts/backup.pl -r 5 -d /backup
 df - h (entrar locais disponíveis para backup)
 grep Database /opt/otrs/Kernel/Config.pm = > Senha
 mysql -u root -p (logar) 
-SELECT sum(round(((data_length + index_length) / 1024 / 1024 / 1024), 2)) as "Size in GB" FROM information_schema.TABLES WHERE table_schema = "otrs"; (tamanho do banco)
+SELECT sum(round(((data_length + index_length) / 1024 / 1024 / 1024), 2)) as "Size in GB" FROM information_schema.TABLES WHERE table_schema = "otrs"; (Tamanho do banco)
 ls -la /opt/otrs/var/article (Amarzenamento de anexos)
