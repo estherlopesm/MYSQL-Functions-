@@ -4,7 +4,7 @@ vim /etc/crontab => fazer a config nele (test)
 0 2 * * * root/opt/otrs/scripts/backup.pl -r 5 -d /backup -t dbonly
 
 /opt/otrs/scripts/backup.pl 
-root/opt/otrs/scripts/backup.pl -r 5 -d /backup 
+root /opt/otrs/scripts/backup.pl -r 5 -d /backup 
 
 
 df - h (entrar locais disponíveis para backup)
