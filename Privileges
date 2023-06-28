@@ -1,0 +1,5 @@
+show Databases #avaliar tabelas e confirmar a requisitada
+select * from mysql.user \G #usuários Mysql 
+grant all privileges on tabela.* to 'user'@'host' #alterando permissão de acordo com a tabela e o usuário 
+FLUSH PRIVILEGES 
+show grants for 'user'@'host' #exibindo as permissões de usuário 
