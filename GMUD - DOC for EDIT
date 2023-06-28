@@ -1,0 +1,13 @@
+-snapshot da VM
+- stop daemon, apache e cron 
+
+
+systemctl stop mysql  # parando servido de banco de dados
+sudo mysqld_safe --skip-grant-tables --skip-networking & #iniciando banco de dados
+mysql -u root #logando no banco de dados
+FLUSH PRIVILEGES; #atualizando os privilegios atuais
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'your_new_password'; #Atualizando a senha do usuário root
+FLUSH PRIVILEGES; #atualizando os privilegios atuais
+quit # saindo do banco de dados
+kill %1 #parando todos os serviços de banco
+service mysql start #iniciando banco de dados
