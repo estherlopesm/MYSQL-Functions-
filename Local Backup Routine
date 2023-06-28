@@ -1,14 +1,17 @@
 /backup# cd / 
 
-vim /etc/crontab => fazer a config nele (test)
+vim /etc/crontab #fazer a config nele (test)
 0 2 * * * root /opt/otrs/scripts/backup.pl -r 5 -d /backup/ -t dbonly
 
 /opt/otrs/scripts/backup.pl 
 root /opt/otrs/scripts/backup.pl -r 5 -d /backup 
 
 
-df - h (entrar locais disponíveis para backup)
-grep Database /opt/otrs/Kernel/Config.pm = > Senha
-mysql -u root -p (logar) 
-SELECT sum(round(((data_length + index_length) / 1024 / 1024 / 1024), 2)) as "Size in GB" FROM information_schema.TABLES WHERE table_schema = "otrs"; (Tamanho do banco)
-ls -la /opt/otrs/var/article (Amarzenamento de anexos)
+df - h #entrar locais disponíveis para backup
+grep Database /opt/otrs/Kernel/Config.pm  #Senha
+mysql -u root -p #logar
+SELECT sum(round(((data_length + index_length) / 1024 / 1024 / 1024), 2)) as "Size in GB" FROM information_schema.TABLES WHERE table_schema = "otrs"; #Tamanho do banco
+ls -la /opt/otrs/var/article #Armazenamento de anexos 
+
+ps -e -orss=,args= |awk '{print $1 " " $2 }'| awk '{tot[$2]+=$1;count[$2]++} END {for (i in tot) {print tot[i],i,count[i]}}' | sort -n | tail -n 15 | sort -nr | awk '{ hr=$1/1024; printf("%13.2fM", hr); print "\t" $2 }’#Utilização do banco por pastas
+
